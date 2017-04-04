@@ -1,0 +1,21 @@
+{
+  "name": "language-koala",
+  "description": "Koala language support in Atom",
+  "version": "0.1.0",
+  "license": "MIT",
+  "engines": {
+    "atom": "*",
+    "node": "*"
+  },
+  "homepage": "https://github.com/zhuguangxiang/language-koala",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhuguangxiang/language-koala.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhuguangxiang/language-koala/issues"
+  },
+  "devDependencies": {
+    "coffeelint": "^1.10.1"
+  }
+}

@@ -1,0 +1,13 @@
+'scopeName': 'text.html.koalahtml'
+'name': 'HTML (Koala)'
+'fileTypes': [
+  'koalahtml'
+]
+'patterns': [
+  {
+    'include': 'text.html.basic'
+  }
+  {
+    'include': 'source.koalatemplate'
+  }
+]

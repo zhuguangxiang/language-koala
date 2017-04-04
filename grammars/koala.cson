@@ -1,0 +1,575 @@
+'scopeName': 'source.koala'
+'name': 'Koala'
+'comment': 'Koala language'
+'fileTypes': [
+  'koala'
+  'kl'
+]
+'foldingStartMarker': '({|\\()\\s*$'
+'foldingStopMarker': '(}|\\))\\s*$'
+'patterns': [
+  {
+    'include': '#comments'
+  }
+  {
+    'comment': 'Interpreted string literals'
+    'begin': '"'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.string.begin.koala'
+    'end': '"'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.string.end.koala'
+    'name': 'string.quoted.double.koala'
+    'patterns': [
+      {
+        'include': '#string_escaped_char'
+      }
+      {
+        'include': '#string_placeholder'
+      }
+    ]
+  }
+  {
+    'comment': 'Raw string literals'
+    'begin': '`'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.string.begin.koala'
+    'end': '`'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.string.end.koala'
+    'name': 'string.quoted.raw.koala',
+    'patterns': [
+      {
+        'include': '#string_placeholder'
+      }
+    ]
+  }
+  {
+    'comment': 'Syntax error receiving channels'
+    'match': '<\\-([\\t ]+)chan\\b'
+    'captures':
+      '1':
+        'name': 'invalid.illegal.receive-channel.koala'
+  }
+  {
+    'comment': 'Syntax error sending channels'
+    'match': '\\bchan([\\t ]+)<\-'
+    'captures':
+      '1':
+        'name': 'invalid.illegal.send-channel.koala'
+  }
+  {
+    'comment': 'Syntax error using slices'
+    'match': '\\[\\](\\s+)'
+    'captures':
+      '1':
+        'name': 'invalid.illegal.slice.koala'
+  }
+  {
+    'comment': 'Syntax error numeric literals'
+    'match': '\\b0[0-7]*[89]\\d*\\b'
+    'name': 'invalid.illegal.numeric.koala'
+  }
+  {
+    'comment': 'Built-in functions'
+    'match': '\\b(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover)\\b(?=\\()'
+    'name': 'support.function.builtin.koala'
+  }
+  {
+    'comment': 'Function declarations'
+    'match': '^(\\bfunc\\b)(?:\\s+(\\([^\\)]+\\)\\s+)?(\\w+)(?=\\())?'
+    'captures':
+      '1':
+        'name': 'keyword.function.koala'
+      '2':
+        'patterns': [
+          {
+            'include': '#brackets'
+          }
+          {
+            'include': '#operators'
+          }
+        ]
+      '3':
+        'patterns': [
+          {
+            'match': '\\d\\w*'
+            'name': 'invalid.illegal.identifier.koala'
+          }
+          {
+            'match': '\\w+'
+            'name': 'entity.name.function.koala'
+          }
+        ]
+  }
+  {
+    'comment': 'Functions'
+    'match': '(\\bfunc\\b)|(\\w+)(?=\\()'
+    'captures':
+      '1':
+        'name': 'keyword.function.koala'
+      '2':
+        'patterns': [
+          {
+            'match': '\\d\\w*'
+            'name': 'invalid.illegal.identifier.koala'
+          }
+          {
+            'match': '\\w+'
+            'name': 'support.function.koala'
+          }
+        ]
+  }
+  {
+    'comment': 'Floating-point literals'
+    'match': '(\\.\\d+([Ee][\-\+]\\d+)?i?)\\b|\\b\\d+\\.\\d*(([Ee][\-\+]\\d+)?i?\\b)?'
+    'name': 'constant.numeric.floating-point.koala'
+  }
+  {
+    'comment': 'Integers'
+    'match': '\\b((0x[0-9a-fA-F]+)|(0[0-7]+i?)|(\\d+([Ee]\\d+)?i?)|(\\d+[Ee][\-\+]\\d+i?))\\b'
+    'name': 'constant.numeric.integer.koala'
+  }
+  {
+    'comment': 'Language constants'
+    'match': '\\b(true|false|nil|iota)\\b'
+    'name': 'constant.language.koala'
+  }
+  {
+    # Package declarations
+    # Using a begin/end here allows us to match the package keyword before the package name is typed
+    'begin': '\\b(package)\\s+'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.package.koala'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'match': '\\d\\w*'
+        'name': 'invalid.illegal.identifier.koala'
+      }
+      {
+        'match': '\\w+'
+        'name': 'entity.name.package.koala'
+      }
+    ]
+  }
+  {
+    # Type declarations
+    # Using a begin/end here allows us to match the type keyword before the type name is typed
+    'begin': '\\b(type)\\s+'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.type.koala'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'match': '\\d\\w*'
+        'name': 'invalid.illegal.identifier.koala'
+      }
+      {
+        'match': '\\w+'
+        'name': 'entity.name.type.koala'
+      }
+    ]
+  }
+  {
+    # Imports
+    'begin': '\\b(import)\\s+'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.import.koala'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'include': '#imports'
+      }
+    ]
+  }
+  {
+    # Variables
+    'begin': '\\b(var)\\s+'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.var.koala'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'include': '#variables'
+      }
+    ]
+  }
+  {
+    # Assignments to existing variables
+    # a =
+    # a, b, whatever =
+    'match': '(?<!var)\\s*(\\w+(?:,\\s*\\w+)*)(?=\\s*=(?!=))'
+    'captures':
+      '1':
+        'patterns': [
+          {
+            'match': '\\d\\w*'
+            'name': 'invalid.illegal.identifier.koala'
+          }
+          {
+            'match': '\\w+'
+            'name': 'variable.other.assignment.koala'
+          }
+          {
+            'include': '#delimiters'
+          }
+        ]
+  }
+  {
+    # Shorthand variable declaration and assignments
+    # a :=
+    # a, b :=
+    'match': '\\w+(?:,\\s*\\w+)*(?=\\s*:=)'
+    'captures':
+      '0':
+        'patterns': [
+          {
+            'match': '\\d\\w*'
+            'name': 'invalid.illegal.identifier.koala'
+          }
+          {
+            'match': '\\w+'
+            'name': 'variable.other.assignment.koala'
+          }
+          {
+            'include': '#delimiters'
+          }
+        ]
+  }
+  {
+    'comment': 'Terminators'
+    'match': ';'
+    'name': 'punctuation.terminator.koala'
+  }
+  {
+    'include': '#brackets'
+  }
+  {
+    'include': '#delimiters'
+  }
+  {
+    'include': '#keywords'
+  }
+  {
+    'include': '#operators'
+  }
+  {
+    'include': '#runes'
+  }
+  {
+    'include': '#storage_types'
+  }
+]
+'repository':
+  'brackets':
+    'patterns': [
+      {
+        'match': '\\{|\\}'
+        'name': 'punctuation.other.bracket.curly.koala'
+      }
+      {
+        'match': '\\(|\\)'
+        'name': 'punctuation.other.bracket.round.koala'
+      }
+      {
+        'match': '\\[|\\]'
+        'name': 'punctuation.other.bracket.square.koala'
+      }
+    ]
+  'comments':
+    'patterns': [
+      {
+        'begin': '/\\*'
+        'end': '\\*/'
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.koala'
+        'name': 'comment.block.koala'
+      }
+      {
+        'begin': '//'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.koala'
+        'end': '$'
+        'name': 'comment.line.double-slash.koala'
+      }
+    ]
+  'delimiters':
+    'patterns': [
+      {
+        'match': ','
+        'name': 'punctuation.other.comma.koala'
+      }
+      {
+        'match': '\\.(?!\\.\\.)'
+        'name': 'punctuation.other.period.koala'
+      }
+      {
+        'match': ':(?!=)'
+        'name': 'punctuation.other.colon.koala'
+      }
+    ]
+  'imports':
+    'patterns': [
+      {
+        # Single line import declarations
+        'match': '((?!\\s+")[^\\s]*)?\\s*((")([^"]*)("))'
+        'captures':
+          '1':
+            'name': 'entity.alias.import.koala'
+          '2':
+            'name': 'string.quoted.double.koala'
+          '3':
+            'name': 'punctuation.definition.string.begin.koala'
+          '4':
+            'name': 'entity.name.import.koala'
+          '5':
+            'name': 'punctuation.definition.string.end.koala'
+      }
+      {
+        # Multiline import declarations
+        'begin': '\\('
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.other.bracket.round.koala'
+        'end': '\\)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.other.bracket.round.koala'
+        'patterns': [
+          {
+            'include': '#imports'
+          }
+          {
+            'include': '#comments'
+          }
+        ]
+      }
+    ]
+  'keywords':
+    'patterns': [
+      {
+        'comment': 'Flow control keywords'
+        'match': '\\b(break|case|continue|default|defer|else|fallthrough|for|koala|koalato|if|range|return|select|switch)\\b'
+        'name': 'keyword.control.koala'
+      }
+      {
+        'match': '\\bchan\\b'
+        'name': 'keyword.channel.koala'
+      }
+      {
+        'match': '\\bconst\\b'
+        'name': 'keyword.const.koala'
+      }
+      {
+        'match': '\\bfunc\\b'
+        'name': 'keyword.function.koala'
+      }
+      {
+        'match': '\\binterface\\b'
+        'name': 'keyword.interface.koala'
+      }
+      {
+        'match': '\\bmap\\b'
+        'name': 'keyword.map.koala'
+      }
+      {
+        'match': '\\bstruct\\b'
+        'name': 'keyword.struct.koala'
+      }
+    ]
+  'operators':
+    'comment': 'Note that the order here is very important!'
+    'patterns': [
+      {
+        'match': '(\\*|&)(?=\\w)'
+        'name': 'keyword.operator.address.koala'
+      }
+      {
+        'match': '<\\-'
+        'name': 'keyword.operator.channel.koala'
+      }
+      {
+        'match': '\\-\\-'
+        'name': 'keyword.operator.decrement.koala'
+      }
+      {
+        'match': '\\+\\+'
+        'name': 'keyword.operator.increment.koala'
+      }
+      {
+        'match': '(==|!=|<=|>=|<[^<]|>[^>])'
+        'name': 'keyword.operator.comparison.koala'
+      }
+      {
+        'match': '(&&|\\|\\||!)'
+        'name': 'keyword.operator.logical.koala'
+      }
+      {
+        'match': '(=|\\+=|\\-=|\\|=|\\^=|\\*=|/=|:=|%=|<<=|>>=|&\\^=|&=)'
+        'name': 'keyword.operator.assignment.koala'
+      }
+      {
+        'match': '(\\+|\\-|\\*|/|%)'
+        'name': 'keyword.operator.arithmetic.koala'
+      }
+      {
+        'match': '(&(?!\\^)|\\||\\^|&\\^|<<|>>)'
+        'name': 'keyword.operator.arithmetic.bitwise.koala'
+      }
+      {
+        'match': '\\.\\.\\.'
+        'name': 'keyword.operator.ellipsis.koala'
+      }
+    ]
+  'runes':
+    'patterns': [
+      {
+        'match': '\\\'(\\\\([0-7]{3}|[abfnrtv\\\\\'"]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})|\\\p{Any})\\\''
+        'name': 'constant.other.rune.koala'
+      }
+      {
+        'match': '\\\'.*\\\''
+        'name': 'invalid.illegal.unknown-rune.koala'
+      }
+    ]
+  'storage_types':
+    'patterns': [
+      {
+        'match': '\\bbool\\b'
+        'name': 'storage.type.boolean.koala'
+      }
+      {
+        'match': '\\bbyte\\b'
+        'name': 'storage.type.byte.koala'
+      }
+      {
+        'match': '\\berror\\b'
+        'name': 'storage.type.error.koala'
+      }
+      {
+        'match': '\\b(complex(64|128)|float(32|64)|u?int(8|16|32|64)?)\\b'
+        'name': 'storage.type.numeric.koala'
+      }
+      {
+        'match': '\\brune\\b'
+        'name': 'storage.type.rune.koala'
+      }
+      {
+        'match': '\\bstring\\b'
+        'name': 'storage.type.string.koala'
+      }
+      {
+        'match': '\\buintptr\\b'
+        'name': 'storage.type.uintptr.koala'
+      }
+    ]
+  'string_escaped_char':
+    'patterns': [
+      {
+        'match': '\\\\([0-7]{3}|[abfnrtv\\\\\'"]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})'
+        'name': 'constant.character.escape.koala'
+      }
+      {
+        'match': '\\\\[^0-7xuUabfnrtv\\\'"]'
+        'name': 'invalid.illegal.unknown-escape.koala'
+      }
+    ]
+  'string_placeholder':
+    'patterns': [
+      {
+        'match': '%(\\[\\d+\\])?([\\+#\\-0\\x20]{,2}((\\d+|\\*)?(\\.?(\\d+|\\*|(\\[\\d+\\])\\*?)?(\\[\\d+\\])?)?))?[vT%tbcdoqxXUbeEfFgGsp]'
+        'name': 'constant.other.placeholder.koala'
+      }
+    ]
+  'variables':
+    # First add tests and make sure existing tests still pass when changing anything here!
+    'patterns': [
+      {
+        # var a =
+        # var a string =
+        # var a, b =
+        # var a, b *c =
+        'match': '(\\w+(?:,\\s*\\w+)*)(\\s+\\*?\\w+\\s*)?(?=\\s*=)'
+        'captures':
+          '1':
+            'patterns': [
+              {
+                'match': '\\d\\w*'
+                'name': 'invalid.illegal.identifier.koala'
+              }
+              {
+                'match': '\\w+'
+                'name': 'variable.other.assignment.koala'
+              }
+              {
+                'include': '#delimiters'
+              }
+            ]
+          '2':
+            'patterns': [
+              {
+                'include': '$self'
+              }
+            ]
+      }
+      {
+        # var a
+        # var a string
+        # var a, b string
+        # var a []string
+        # var a [3]string
+        # var a [][]*string
+        'match': '(\\w+(?:,\\s*\\w+)*)(\\s+(\\[\\d*\\])*\\*?\\w+\\s*[^=].*)'
+        'captures':
+          '1':
+            'patterns': [
+              {
+                'match': '\\d\\w*'
+                'name': 'invalid.illegal.identifier.koala'
+              }
+              {
+                'match': '\\w+'
+                'name': 'variable.other.declaration.koala'
+              }
+              {
+                'include': '#delimiters'
+              }
+            ]
+          '2':
+            'patterns': [
+              {
+                'include': '$self'
+              }
+            ]
+      }
+      {
+        # Multiline variable declarations/assignments
+        'begin': '\\('
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.other.bracket.round.koala'
+        'end': '\\)'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.other.bracket.round.koala'
+        'patterns': [
+          {
+            'include': '#variables'
+          }
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
