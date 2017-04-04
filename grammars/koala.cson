@@ -303,6 +303,14 @@
         'end': '$'
         'name': 'comment.line.double-slash.koala'
       }
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.koala'
+        'end': '$'
+        'name': 'comment.line.double-slash.koala'
+      }
     ]
   'delimiters':
     'patterns': [
